@@ -18,12 +18,13 @@ TELEGRAM_BOT_TOKEN = os.environ["TELEGRAM_BOT_TOKEN_NOTIF_BOT"]  # Set your Tele
 TELEGRAM_CHAT_ID = int(os.environ["TELEGRAM_BOT_CHAT_ID"]) # Replace with your chat ID
 
 import logging
-from datetime import datetime, timedelta, time
+from datetime import datetime, timedelta, time, timezone
 from arxiv_util import *
 from preference_model import PreferenceModel
 
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
-from telegram.ext import ApplicationBuilder, ContextTypes, CallbackQueryHandler
+from telegram.ext import ApplicationBuilder, ContextTypes, CallbackQueryHandler, Defaults
+
 
 model_name = 'pytorch_preference_model.pt'
 vectorizer_name = 'tfidf_vectorizer.joblib'
@@ -129,7 +130,8 @@ def main():
 
     args = parser.parse_args()
 
-    application = ApplicationBuilder().token(TELEGRAM_BOT_TOKEN).build()
+    defaults = Defaults(tzinfo=timezone(timedelta(hours=-6))) # Configure to your timezone 
+    application = ApplicationBuilder().token(TELEGRAM_BOT_TOKEN).defaults(defaults).build()
 
     application.add_handler(CallbackQueryHandler(feedback_handler))
 
