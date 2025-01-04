@@ -15,10 +15,11 @@ def get_arxiv_message(result):
     summary = result.summary.replace('\n', ' ')
     authors = ', '.join([author.name for author in result.authors]) 
     message = (
-        f"**Title:** {result.title}\n"
-        f"**Authors:** {authors}\n"
-        f"**Summary:** {summary}\n"
-        f"**URL:** {result.entry_id}"
+        f"<b>Title:</b> {result.title}\n\n"
+        f"<b>Authors:</b> {authors}\n\n"
+        f"<b>Summary:</b> {summary}\n\n"
+        f"<b>URL:</b> {result.entry_id}\n\n"
+        f"<b>Pub Date:</b> {result.published.date()}"
     )
     return message
 

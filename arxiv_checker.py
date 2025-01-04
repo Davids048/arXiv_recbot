@@ -94,6 +94,9 @@ async def fetch_and_send_papers(keywords, backdays, context: ContextTypes.DEFAUL
     # Select the top 10 papers
     papers_to_send = papers_to_send[:10]
 
+    summary_message = f"<b>The following are {len(papers_to_send)} papers since {yesterday.date()}.</b>"
+    await context.bot.send_message(chat_id=TELEGRAM_CHAT_ID, text=summary_message, parse_mode="HTML")
+
     for overall_rating, message, entry_id in papers_to_send:
         # Provide 5 level of rating for the paper.
         # Provide emoji for each level of rating.
@@ -104,9 +107,8 @@ async def fetch_and_send_papers(keywords, backdays, context: ContextTypes.DEFAUL
             ],
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
-
         try:
-            await context.bot.send_message(chat_id=TELEGRAM_CHAT_ID, text=message, parse_mode="Markdown", reply_markup=reply_markup)
+            await context.bot.send_message(chat_id=TELEGRAM_CHAT_ID, text=message, parse_mode="HTML", reply_markup=reply_markup)
         except Exception as e:
             print(e)
 
@@ -139,8 +141,9 @@ def main():
     run_daily_fetch_func = lambda context: fetch_and_send_papers(args.keywords, 2, context)
 
     if args.first_backcheck_day is not None:
-        application.job_queue.run_once(run_once_fetch_func, when=timedelta(seconds=1))
-    application.job_queue.run_daily(run_daily_fetch_func, time(hour=15)) 
+        logging.info(f"Fetching papers since {args.first_backcheck_day} days ago...")
+        application.job_queue.run_once(run_once_fetch_func, when=timedelta(seconds=5))
+    application.job_queue.run_daily(run_daily_fetch_func, time(hour=9)) 
 
     # Run the bot
     application.run_polling()
