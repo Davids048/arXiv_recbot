@@ -7,11 +7,13 @@ import random
 import argparse
 
 import torch
+from dotenv import load_dotenv
 
 # Define your keywords
 MAX_RESULTS = 100
 
 # Telegram Bot Token and Chat ID (replace with your actual values)
+load_dotenv()
 TELEGRAM_BOT_TOKEN = os.environ["TELEGRAM_BOT_TOKEN_NOTIF_BOT"]  # Set your Telegram bot token as an environment variable
 TELEGRAM_CHAT_ID = int(os.environ["TELEGRAM_BOT_CHAT_ID"]) # Replace with your chat ID
 
